@@ -106,6 +106,8 @@ class Pet {
     constructor() {
         this.name = "";
         this.birthday = new Date();
+        this.race = ""; // TODO
+        this.color = ""; // TODO
         this.level = new PetLevel();
         this.stats = {
             // 饥饿值
@@ -170,20 +172,34 @@ class Pet {
 
     // ------------------------------活动------------------------------
     eat() {
+        if (this.stats.hungry.getPercent() > 0.95) return this.name + "还不想吃饭";
         this.stats.hungry.addValuePer(0.5);
+        let per = this.stats.hungry.getPercent();
+        if (per < 0.7) return this.name + "吃完啦，但是感觉还是有点饿";
+        else if (per < 0.95) return this.name + "吃饱啦";
+        else return this.name + "再也吃不下了";
     }
 
     drink() {
+        if (this.stats.thirsty.getPercent() > 0.95) return this.name + "还不想喝水";
         this.stats.thirsty.addValuePer(0.5);
+        let per = this.stats.thirsty.getPercent();
+        if (per < 0.7) return this.name + "把水喝光了，好像还不够";
+        else if (per < 0.95) return this.name + "喝完了水";
+        else return this.name + "再也喝不下了";
     }
 
     play() {
+        this.stats.hungry.addValue(-100);
+        this.stats.thirsty.addValue(-100);
         this.stats.mood.addValuePer(0.3);
+        return "和" + this.name + "玩得很开心";
     }
 
     cure() {
-        this.stats.healthy.addValuePer(0.3);
+        this.stats.healthy.addValuePer(0.7);
         this.stats.mood.addValue(-500);
+        return "给" + this.name + "打针，" + this.name + "好像生气了QAQ";
     }
 
 
@@ -193,9 +209,13 @@ class Pet {
         this.timer = setInterval(() => {
             this.timeTick();
         }, interval);
+        return "你的小可爱醒来啦！";
     }
 
     sleep() {
         clearInterval(this.timer);
+        return "你的小可爱睡觉啦！";
     }
 }
+
+module.exports = Pet;
