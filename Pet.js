@@ -129,7 +129,7 @@ class PetLevel {
     }
 
     getStageName() {
-        const stageName = ["幼猫", "猫", "猫娘"];
+        const stageName = ["幼猫", "成年", "猫娘"];
         return stageName[this.stage];
     }
 
@@ -143,7 +143,16 @@ class PetLevel {
 
 
 class Pet {
-    constructor() {
+    /**
+     * @param {Number} masterId qqId/群Id
+     * @param {"Private"|"Group"} masterType 
+     * @param {Number} petId
+     */
+    constructor(masterId, masterType, petId) {
+        this.masterId = masterId;
+        this.masterType = masterType;
+        this.petId = petId;
+
         this.isActive = false;
         this.petStatus = PetStatus.doNothing;
         this.name = "";
@@ -181,6 +190,10 @@ class Pet {
     }
 
     load(storage) {
+        this.masterId = storage.masterId;
+        this.masterType = storage.masterType;
+        this.petId = storage.petId;
+
         this.isActive = storage.isActive;
         this.petStatus = storage.petStatus;
         this.name = storage.name;
@@ -316,7 +329,7 @@ class Pet {
      */
     toEat(foodValue, relationship) {
         if (!this.isActive) return {success: false, detail: this.name + "还在冻结中，请先解冻"};
-        if (this.petStatus === PetStatus.sleeping) return {success: false, detail: this.name + "还在睡觉中"};
+        if (this.petStatus === PetStatus.sleeping) return {success: false, detail: this.name + "还在睡觉"};
 
         // 幼猫受关系度影响较小
         let successProbability = (this.level.stage + 1.0)/ 3 * (((relationship + 1.0) / 2) - 1) + 1;
